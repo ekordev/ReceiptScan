@@ -12,32 +12,32 @@ import com.lucianbc.receiptscan.utils.logd
 import com.lucianbc.receiptscan.view.fragment.scanner.Scanner
 import com.lucianbc.receiptscan.view.fragment.scanner.Error
 import com.lucianbc.receiptscan.view.fragment.scanner.Permission
-import com.lucianbc.receiptscan.viewmodel.ScannerViewModel
+import com.lucianbc.receiptscan.viewmodel.scanner.ActivityViewModel
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 class ScannerActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
-    private val stateObserver = Observer<ScannerViewModel.State> {
+    private val stateObserver = Observer<ActivityViewModel.State> {
         when (it) {
-            ScannerViewModel.State.NoPermission -> loadPermissionMessage()
-            ScannerViewModel.State.Allowed -> loadScannerFragment()
-            ScannerViewModel.State.Error -> loadErrorMessage()
+            ActivityViewModel.State.NoPermission -> loadPermissionMessage()
+            ActivityViewModel.State.Allowed -> loadScannerFragment()
+            ActivityViewModel.State.Error -> loadErrorMessage()
         }
     }
 
-    private lateinit var viewModel: ScannerViewModel
+    private lateinit var viewModel: ActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scanner)
-        viewModel = ViewModelProviders.of(this).get(ScannerViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
         logd("ViewModel in activity: $viewModel")
         observeState(viewModel)
         checkCameraPermissions()
     }
 
-    private fun observeState(viewModel: ScannerViewModel) {
+    private fun observeState(viewModel: ActivityViewModel) {
         viewModel.state.observe(this, stateObserver)
     }
 
@@ -45,9 +45,9 @@ class ScannerActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks
     private fun checkCameraPermissions() {
         logd("Checking permission")
         if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA))
-            viewModel.state.value = ScannerViewModel.State.Allowed
+            viewModel.state.value = ActivityViewModel.State.Allowed
         else
-            viewModel.state.value = ScannerViewModel.State.NoPermission
+            viewModel.state.value = ActivityViewModel.State.NoPermission
     }
 
     private fun loadScannerFragment() {

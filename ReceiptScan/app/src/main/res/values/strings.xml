@@ -6,4 +6,5 @@
     <string name="allow_camera_btn">Allow Camera</string>
     <string name="scanner_error_text">There was an error with the camera.</string>
     <string name="request_camera_msg">Allow to use camera</string>
+    <string name="flash_toggle">Flash Off</string>
 </resources>

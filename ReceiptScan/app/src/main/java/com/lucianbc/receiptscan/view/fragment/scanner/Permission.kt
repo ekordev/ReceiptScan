@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.lucianbc.receiptscan.R
 import com.lucianbc.receiptscan.utils.logd
 import com.lucianbc.receiptscan.view.activity.ScannerActivity
-import com.lucianbc.receiptscan.viewmodel.ScannerViewModel
+import com.lucianbc.receiptscan.viewmodel.scanner.ActivityViewModel
 import kotlinx.android.synthetic.main.fragment_scanner_permission.*
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -20,7 +20,7 @@ class Permission : Fragment() {
         fun newInstance() = Permission()
     }
 
-    private lateinit var viewModel: ScannerViewModel
+    private lateinit var viewModel: ActivityViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +32,7 @@ class Permission : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity!!).get(ScannerViewModel::class.java)
+        viewModel = ViewModelProviders.of(activity!!).get(ActivityViewModel::class.java)
         scanner_permission_btn.setOnClickListener(requestPermission)
     }
 

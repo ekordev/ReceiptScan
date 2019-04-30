@@ -1,14 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.fragment.scanner.Scanner">
 
-    <TextureView
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="viewModel" type="com.lucianbc.receiptscan.viewmodel.scanner.ScannerViewModel"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scanner_texture"/>
+        tools:context=".view.fragment.scanner.Scanner">
 
-</RelativeLayout>
+        <com.otaliastudios.cameraview.CameraView
+            android:id="@+id/scanner"
+            android:keepScreenOn="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cameraPreview="texture"
+            app:cameraAudio="off"
+            app:cameraGesturePinch="zoom"
+            app:cameraGestureLongTap="capture"
+            app:cameraGestureTap="focusWithMarker"
+        />
+
+        <ImageButton
+            android:src="@{viewModel.flash}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/flash_toggle_btn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:contentDescription="@string/flash_toggle"
+            android:onClick="@{() -> viewModel.toggleFlash()}"
+            android:background="?android:selectableItemBackground"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

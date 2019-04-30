@@ -1,9 +1,9 @@
-package com.lucianbc.receiptscan.viewmodel
+package com.lucianbc.receiptscan.viewmodel.scanner
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class ScannerViewModel : ViewModel() {
+class ActivityViewModel : ViewModel() {
 
     sealed class State {
         object NoPermission: State()
@@ -12,5 +12,4 @@ class ScannerViewModel : ViewModel() {
     }
 
     val state = MutableLiveData<State>()
-
 }

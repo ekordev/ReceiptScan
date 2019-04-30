@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import com.lucianbc.receiptscan.R
 import com.lucianbc.receiptscan.utils.logd
-import com.lucianbc.receiptscan.viewmodel.ScannerViewModel
+import com.lucianbc.receiptscan.viewmodel.scanner.ActivityViewModel
 
 class Error : Fragment() {
 
@@ -17,7 +17,7 @@ class Error : Fragment() {
         fun newInstance() = Error()
     }
 
-    private lateinit var viewModel: ScannerViewModel
+    private lateinit var viewModel: ActivityViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +28,7 @@ class Error : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity!!).get(ScannerViewModel::class.java)
+        viewModel = ViewModelProviders.of(activity!!).get(ActivityViewModel::class.java)
     }
 
     override fun onDestroy() {
