@@ -26,6 +26,12 @@
             app:cameraGestureTap="focusWithMarker"
         />
 
+        <com.lucianbc.receiptscan.view.fragment.scanner.DataOverlay
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scanner_overlay"
+        />
+
         <ImageButton
             android:src="@{viewModel.flash}"
             android:layout_width="wrap_content"

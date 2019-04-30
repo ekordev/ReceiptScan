@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'com.google.gms.google-services'
+
 
 android {
     compileSdkVersion 28
@@ -46,4 +48,8 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
 
     api 'com.otaliastudios:cameraview:2.0.0-beta04'
+
+    implementation 'com.google.firebase:firebase-core:16.0.8'
+    implementation 'com.google.firebase:firebase-ml-vision:19.0.3'
+    implementation 'com.google.firebase:firebase-ml-model-interpreter:18.0.0'
 }
