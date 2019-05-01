@@ -52,4 +52,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.firebase:firebase-ml-vision:19.0.3'
     implementation 'com.google.firebase:firebase-ml-model-interpreter:18.0.0'
+
+    implementation 'com.github.MikeOrtiz:TouchImageView:2.1.1'
 }

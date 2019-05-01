@@ -22,8 +22,7 @@
             app:cameraPreview="texture"
             app:cameraAudio="off"
             app:cameraGesturePinch="zoom"
-            app:cameraGestureLongTap="capture"
-            app:cameraGestureTap="focusWithMarker"
+            app:cameraGestureTap="capture"
         />
 
         <com.lucianbc.receiptscan.view.fragment.scanner.DataOverlay

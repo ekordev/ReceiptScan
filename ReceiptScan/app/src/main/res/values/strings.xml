@@ -2,9 +2,13 @@
     <string name="app_name">ReceiptScan</string>
     <string name="scan_btn_text">Scan</string>
 
-    <string name="scanner_permission_text">The app requires camera permission. Tap on the button to allow camera.</string>
+    <string name="scanner_permission_text">The app requires camera permission. Tap on the button to allow camera.
+    </string>
     <string name="allow_camera_btn">Allow Camera</string>
     <string name="scanner_error_text">There was an error with the camera.</string>
     <string name="request_camera_msg">Allow to use camera</string>
     <string name="flash_toggle">Flash Off</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

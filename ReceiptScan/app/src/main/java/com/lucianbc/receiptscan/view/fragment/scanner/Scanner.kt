@@ -16,13 +16,10 @@ import com.lucianbc.receiptscan.R
 import com.lucianbc.receiptscan.common.service.ScannerProcessor
 import com.lucianbc.receiptscan.utils.logd
 import com.lucianbc.receiptscan.viewmodel.scanner.ActivityViewModel
-import com.otaliastudios.cameraview.Size
-import com.otaliastudios.cameraview.SizeSelector
 import kotlinx.android.synthetic.main.scanner_fragment.*
 import com.lucianbc.receiptscan.databinding.ScannerFragmentBinding
 import com.lucianbc.receiptscan.viewmodel.scanner.ScannerViewModel
-import com.otaliastudios.cameraview.CameraUtils
-import com.otaliastudios.cameraview.Flash
+import com.otaliastudios.cameraview.*
 
 class Scanner : Fragment() {
     companion object {
@@ -56,22 +53,24 @@ class Scanner : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scanner.setLifecycleOwner(viewLifecycleOwner)
-        scanner.setPreviewStreamSize(object: SizeSelector {
-            override fun select(source: MutableList<Size>): MutableList<Size> {
-                logd(source.toString())
-                return source
-            }
-        })
-        scanner.addFrameProcessor {
-            processor.process(it) { res ->
-                fragmentViewModel.elements.value = res
-            }
-        }
+//        scanner.setPreviewStreamSize(object: SizeSelector {
+//            override fun select(source: MutableList<Size>): MutableList<Size> {
+//                logd(source.toString())
+//                return source
+//            }
+//        })
+        scanner.addCameraListener(pictureTaken)
+
+//        scanner.addFrameProcessor {
+//            processor.process(it) { res ->
+//                fragmentViewModel.elements.value = res
+//            }
+//        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        activityViewModel = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
+        activityViewModel = ViewModelProviders.of(activity!!).get(ActivityViewModel::class.java)
     }
 
     private fun observe(vm: ScannerViewModel) {
@@ -82,6 +81,14 @@ class Scanner : Fragment() {
         vm.elements.observe(this, Observer {
             scanner_overlay.elements = vm.elements.value!!
         })
+    }
+
+    private val pictureTaken = object: CameraListener() {
+        override fun onPictureTaken(result: PictureResult) {
+            result.toBitmap {
+                activityViewModel.state.value = ActivityViewModel.State.Preview(it!!)
+            }
+        }
     }
 }
 
