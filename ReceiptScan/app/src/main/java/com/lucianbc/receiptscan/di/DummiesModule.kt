@@ -11,11 +11,11 @@ import dagger.Provides
 @Module
 class DummiesModule {
 
-    @Provides
-    fun provideDummyTaggingService(): TaggingService {
-        return object : TaggingService {
-            override fun tag(elements: OcrElements): Annotations =
-                elements.map { it.toAnnotation(Tag.Noise) }
-        }
-    }
+//    @Provides
+//    fun provideDummyTaggingService(): TaggingService {
+//        return object : TaggingService {
+//            override fun tag(elements: OcrElements): Annotations =
+//                elements.map { it.toAnnotation(Tag.Noise) }
+//        }
+//    }
 }
