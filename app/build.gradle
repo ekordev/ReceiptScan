@@ -103,7 +103,7 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:2.0.1"
 
     // firebase ml
-    implementation 'com.google.firebase:firebase-core:17.1.0'
+    implementation 'com.google.firebase:firebase-core:17.2.0'
     implementation 'com.google.firebase:firebase-ml-vision:23.0.0'
 
     // camera
