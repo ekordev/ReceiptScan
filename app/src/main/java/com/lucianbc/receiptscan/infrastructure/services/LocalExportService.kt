@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.lucianbc.receiptscan.R
 import com.lucianbc.receiptscan.domain.export.ExportUseCase
 import com.lucianbc.receiptscan.domain.export.LocalSession
@@ -20,7 +21,7 @@ import javax.inject.Inject
 
 class LocalExportService : DaggerService() {
 
-    private lateinit var localSession : LocalSession
+    private lateinit var localSession: LocalSession
 
     private val disposables = CompositeDisposable()
 
@@ -40,6 +41,7 @@ class LocalExportService : DaggerService() {
             .subscribeOn(Schedulers.io())
             .subscribe {
                 stopSelf()
+                showFinishNotification()
             }
             .addTo(disposables)
 
@@ -50,7 +52,8 @@ class LocalExportService : DaggerService() {
         val tapIntent = MainActivity.navIntent(this, HomePagerAdapter.EXPORT)
         val pendingIntent = PendingIntent.getActivity(this, 0, tapIntent, 0)
 
-        return NotificationCompat.Builder(this,
+        return NotificationCompat.Builder(
+            this,
             CHANNEL_ID
         )
             .setContentTitle("Exporting")
@@ -59,6 +62,22 @@ class LocalExportService : DaggerService() {
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setContentIntent(pendingIntent)
             .build()
+    }
+
+    private fun showFinishNotification() {
+        val tapIntent = MainActivity.navIntent(this, HomePagerAdapter.EXPORT)
+        val pendingIntent = PendingIntent.getActivity(this, 0, tapIntent, 0)
+
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Finished")
+            .setContentText("Your spreadsheet has been written. Tap to go to exports.")
+            .setProgress(0, 0, true)
+            .setSmallIcon(R.drawable.ic_android_black_24dp)
+            .setContentIntent(pendingIntent)
+            .build()
+        with(NotificationManagerCompat.from(this)) {
+            notify(1, notification)
+        }
     }
 
     override fun onDestroy() {

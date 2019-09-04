@@ -136,6 +136,9 @@ dependencies {
 
     // range date picker
     implementation 'com.savvi.datepicker:rangepicker:1.3.0'
+
+    // creating xlsx files
+    implementation "org.apache.poi:poi-ooxml:3.17"
 }
 
 apply plugin: 'com.google.gms.google-services'
