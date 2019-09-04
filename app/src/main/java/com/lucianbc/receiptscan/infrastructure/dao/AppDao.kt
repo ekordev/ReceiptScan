@@ -129,7 +129,7 @@ interface AppDao {
     fun updateStatusAndLink(id: String, status: Status, downloadLink: String): Completable
 
     @Query("""
-        select  id, firstDate, lastDate, content, format, status, downloadLink
+        select  id, firstDate, lastDate, status, downloadLink, type
         from    export
         order   by creationTimestamp desc
     """)

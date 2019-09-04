@@ -4,10 +4,7 @@ import com.lucianbc.receiptscan.presentation.draft.DraftFragment
 import com.lucianbc.receiptscan.presentation.draft.ReceiptImageFragment
 import com.lucianbc.receiptscan.presentation.home.drafts.DraftsFragment
 import com.lucianbc.receiptscan.presentation.home.exports.ExportFragment
-import com.lucianbc.receiptscan.presentation.home.exports.form.ContentFormatFragment
-import com.lucianbc.receiptscan.presentation.home.exports.form.ContentFragment
-import com.lucianbc.receiptscan.presentation.home.exports.form.DateRangeFragment
-import com.lucianbc.receiptscan.presentation.home.exports.form.FormContainerFragment
+import com.lucianbc.receiptscan.presentation.home.exports.form.*
 import com.lucianbc.receiptscan.presentation.home.receipts.ReceiptsFragment
 import com.lucianbc.receiptscan.presentation.home.settings.SettingsFragment
 import com.lucianbc.receiptscan.presentation.receipt.ReceiptFragment
@@ -57,4 +54,7 @@ abstract class FragmentModule {
 
     @ContributesAndroidInjector
     abstract fun contributeExportFragment(): ExportFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeExportOption(): LocalOrCloudFragment
 }

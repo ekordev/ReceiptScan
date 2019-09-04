@@ -5,6 +5,7 @@ import io.reactivex.Flowable
 
 interface ExportUseCase {
     fun list(): Flowable<List<Export>>
-    fun newExport(manifest: Session): Completable
+    fun newExport(manifest: CloudSession): Completable
+    fun newExport(manifest: LocalSession): Completable
     fun markAsFinished(notification: FinishedNotification): Completable
 }

@@ -18,7 +18,7 @@ class UploadUseCase @AssistedInject constructor(
     private val prefs: PreferencesDao,
     storage: FirebaseStorage,
     private val firestore: FirebaseFirestore,
-    @Assisted private val manifest: Session
+    @Assisted private val manifest: CloudSession
 ) {
     private fun execute(): Completable {
         return repo
@@ -30,10 +30,10 @@ class UploadUseCase @AssistedInject constructor(
 
     private fun sendContent(): Completable {
         return when (manifest.content) {
-            Session.Content.TextOnly ->
+            CloudSession.Content.TextOnly ->
                 repo.getTextReceiptsBeteewn(manifest.firstDate, manifest.lastDate)
                     .flatMapCompletable { Completable.concat(it.map(this::send)) }
-            Session.Content.TextAndImage ->
+            CloudSession.Content.TextAndImage ->
                 repo.getImageReceiptsBetween(manifest.firstDate, manifest.lastDate)
                     .flatMapCompletable { Completable.concat(it.map(this::send)) }
         }
@@ -82,6 +82,6 @@ class UploadUseCase @AssistedInject constructor(
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(manifest: Session): UploadUseCase
+        fun create(manifest: CloudSession): UploadUseCase
     }
 }

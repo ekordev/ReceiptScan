@@ -1,8 +1,9 @@
 package com.lucianbc.receiptscan.infrastructure.dao
 
 import androidx.room.TypeConverter
-import com.lucianbc.receiptscan.domain.export.Session
+import com.lucianbc.receiptscan.domain.export.CloudSession
 import com.lucianbc.receiptscan.domain.export.Status
+import com.lucianbc.receiptscan.domain.export.Type
 import com.lucianbc.receiptscan.domain.model.Category
 import com.lucianbc.receiptscan.util.toDate
 import java.lang.IllegalStateException
@@ -47,20 +48,29 @@ class Converters {
 
         @TypeConverter
         @JvmStatic
-        fun toContent(value: String?) = value?.let { Session.Content.valueOf(it) }
+        fun toContent(value: String?) = value?.let { CloudSession.Content.valueOf(it) }
             ?: throw IllegalStateException("Export session content was null")
 
         @TypeConverter
         @JvmStatic
-        fun fromContent(content: Session.Content) = content.name
+        fun fromContent(content: CloudSession.Content) = content.name
 
         @TypeConverter
         @JvmStatic
-        fun toFormat(value: String?) = value?.let { Session.Format.valueOf(it) }
+        fun toFormat(value: String?) = value?.let { CloudSession.Format.valueOf(it) }
             ?: throw IllegalStateException("Export session content was null")
 
         @TypeConverter
         @JvmStatic
-        fun fromFormat(format: Session.Format) = format.name
+        fun fromFormat(format: CloudSession.Format) = format.name
+
+        @TypeConverter
+        @JvmStatic
+        fun toType(value: String?) = value?.let { Type.valueOf(it) }
+            ?: throw IllegalStateException("Export session type was null")
+
+        @TypeConverter
+        @JvmStatic
+        fun fromType(type: Type) = type.name
     }
 }

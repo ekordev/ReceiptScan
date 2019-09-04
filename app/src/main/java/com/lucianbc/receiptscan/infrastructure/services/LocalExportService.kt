@@ -8,7 +8,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.lucianbc.receiptscan.R
 import com.lucianbc.receiptscan.domain.export.ExportUseCase
-import com.lucianbc.receiptscan.domain.export.CloudSession
+import com.lucianbc.receiptscan.domain.export.LocalSession
 import com.lucianbc.receiptscan.presentation.home.HomePagerAdapter
 import com.lucianbc.receiptscan.presentation.home.MainActivity
 import com.lucianbc.receiptscan.presentation.home.exports.CHANNEL_ID
@@ -18,25 +18,25 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class ExportService : DaggerService() {
+class LocalExportService : DaggerService() {
 
-    private lateinit var cloudSession : CloudSession
+    private lateinit var localSession : LocalSession
+
+    private val disposables = CompositeDisposable()
 
     @Inject
     lateinit var useCase: ExportUseCase
 
-    private val disposables = CompositeDisposable()
-
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        cloudSession = intent?.extras?.getParcelable(SESSION_KEY)!!
+        localSession = intent?.extras?.getParcelable(SESSION_KEY)!!
 
         startForeground(1, notification())
 
-        useCase.newExport(cloudSession)
+        useCase.newExport(localSession)
             .subscribeOn(Schedulers.io())
             .subscribe {
                 stopSelf()
@@ -54,7 +54,7 @@ class ExportService : DaggerService() {
             CHANNEL_ID
         )
             .setContentTitle("Exporting")
-            .setContentText("Uploading your data to cloud")
+            .setContentText("Building your spreadsheet")
             .setProgress(0, 0, true)
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setContentIntent(pendingIntent)
@@ -67,9 +67,9 @@ class ExportService : DaggerService() {
     }
 
     companion object {
-        fun intent(context: Context, cloudSession: CloudSession): Intent {
-            return Intent(context, ExportService::class.java).apply {
-                putExtra(SESSION_KEY, cloudSession)
+        fun intent(context: Context, localSession: LocalSession): Intent {
+            return Intent(context, LocalExportService::class.java).apply {
+                putExtra(SESSION_KEY, localSession)
             }
         }
 

@@ -7,7 +7,8 @@ import javax.inject.Inject
 
 class ExportUseCaseImpl @Inject constructor(
     private val repository: ExportRepository,
-    private val uploadFactory: UploadUseCase.Factory
+    private val uploadFactory: UploadUseCase.Factory,
+    private val localFactory: LocalExportUseCase.Factory
 ) : ExportUseCase {
     override fun list() = repository.linst()
 
@@ -20,7 +21,11 @@ class ExportUseCaseImpl @Inject constructor(
             )
             .subscribeOn(Schedulers.io())
 
-    override fun newExport(manifest: Session): Completable {
+    override fun newExport(manifest: CloudSession): Completable {
         return uploadFactory.create(manifest)()
+    }
+
+    override fun newExport(manifest: LocalSession): Completable {
+        return localFactory.create(manifest)()
     }
 }

@@ -6,13 +6,18 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 
 @SuppressLint("WrongConstant")
-class OptionsAdapter(fm: FragmentManager)
+class OptionsAdapter(
+    fm: FragmentManager,
+    cloudOption: () -> Unit,
+    localOption: () -> Unit
+)
     : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private val fragmentList = listOf(
+        DateRangeFragment(),
+        LocalOrCloudFragment(localOption, cloudOption),
         ContentFragment(),
-        ContentFormatFragment(),
-        DateRangeFragment()
+        ContentFormatFragment()
     )
 
     override fun getItem(position: Int): Fragment = fragmentList[position]

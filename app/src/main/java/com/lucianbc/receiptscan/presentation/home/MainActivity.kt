@@ -86,7 +86,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
     @Subscribe
     fun onExportForm(event: Event.ExportForm) {
-        val frag = FormContainerFragment(event.callback)
+        val frag = FormContainerFragment(event.callback, event.localCallback)
         addFragment(FormContainerFragment.TAG, frag)
     }
 

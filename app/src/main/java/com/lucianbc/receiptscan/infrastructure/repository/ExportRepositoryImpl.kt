@@ -1,9 +1,6 @@
 package com.lucianbc.receiptscan.infrastructure.repository
 
-import com.lucianbc.receiptscan.domain.export.Export
-import com.lucianbc.receiptscan.domain.export.ExportRepository
-import com.lucianbc.receiptscan.domain.export.Session
-import com.lucianbc.receiptscan.domain.export.Status
+import com.lucianbc.receiptscan.domain.export.*
 import com.lucianbc.receiptscan.infrastructure.dao.AppDao
 import com.lucianbc.receiptscan.infrastructure.dao.Converters
 import com.lucianbc.receiptscan.infrastructure.entities.ExportEntity
@@ -16,8 +13,8 @@ class ExportRepositoryImpl @Inject constructor(
     private val appDao: AppDao
 ) : ExportRepository {
 
-    override fun persist(session: Session, status: Status) =
-        session.run {
+    override fun persist(cloudSession: CloudSession, status: Status) =
+        cloudSession.run {
             ExportEntity(
                 id,
                 firstDate,
@@ -26,6 +23,22 @@ class ExportRepositoryImpl @Inject constructor(
                 format,
                 status,
                 "",
+                Type.CLOUD,
+                Date()
+            )
+        }.let(appDao::insert)
+
+    override fun persist(localSession: LocalSession, status: Status) =
+        localSession.run {
+            ExportEntity(
+                id,
+                firstDate,
+                lastDate,
+                CloudSession.Content.TextOnly,
+                CloudSession.Format.CSV,
+                status,
+                "",
+                Type.LOCAL,
                 Date()
             )
         }.let(appDao::insert)
@@ -49,5 +62,6 @@ class ExportRepositoryImpl @Inject constructor(
 
     override fun updateStatus(id: String, status: Status) = appDao.updateStatus(id, status)
 
-    override fun updateStatus(id: String, status: Status, downloadLink: String) = appDao.updateStatusAndLink(id, status, downloadLink)
+    override fun updateStatus(id: String, status: Status, downloadLink: String) =
+        appDao.updateStatusAndLink(id, status, downloadLink)
 }

@@ -10,13 +10,15 @@ import androidx.viewpager.widget.ViewPager
 import com.lucianbc.receiptscan.R
 import com.lucianbc.receiptscan.base.BaseFragment
 import com.lucianbc.receiptscan.databinding.FragmentFormContainerBinding
-import com.lucianbc.receiptscan.domain.export.ExportException
-import com.lucianbc.receiptscan.domain.export.Session
+import com.lucianbc.receiptscan.domain.export.SessionException
+import com.lucianbc.receiptscan.domain.export.CloudSession
+import com.lucianbc.receiptscan.domain.export.LocalSession
 import kotlinx.android.synthetic.main.fragment_form_container.*
 
 
 class FormContainerFragment(
-    private val callback: (Session) -> Unit
+    private val cloudCallback: (CloudSession) -> Unit,
+    private val localCallback: (LocalSession) -> Unit
 )
     : BaseFragment<FormViewModel>(FormViewModel::class.java) {
 
@@ -45,7 +47,7 @@ class FormContainerFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = OptionsAdapter(fragmentManager!!)
+        val adapter = OptionsAdapter(fragmentManager!!, ::advancePager, ::triggerLocal)
         exportOptionsPager.offscreenPageLimit = adapter.count
         exportOptionsPager.adapter = adapter
 
@@ -66,11 +68,11 @@ class FormContainerFragment(
 
         actionButton.setOnClickListener {
             if (viewModel.option.value == FormViewModel.Option.Next)
-                exportOptionsPager.currentItem = exportOptionsPager.currentItem + 1
+                advancePager()
             else {
                 try {
-                    viewModel.validateInput().let(callback::invoke)
-                } catch (e: ExportException) {
+                    viewModel.validateCloudInput().let(cloudCallback::invoke)
+                } catch (e: SessionException) {
                     Toast.makeText(activity!!, e.error.name, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -78,6 +80,14 @@ class FormContainerFragment(
         closeFormBtn.setOnClickListener {
             fragmentManager?.popBackStack()
         }
+    }
+
+    private fun advancePager() {
+        exportOptionsPager.currentItem = exportOptionsPager.currentItem + 1
+    }
+
+    private fun triggerLocal() {
+        viewModel.validateLocalInput().let(localCallback)
     }
 
     companion object {

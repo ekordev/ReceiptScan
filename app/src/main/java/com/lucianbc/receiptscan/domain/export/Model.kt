@@ -2,14 +2,14 @@ package com.lucianbc.receiptscan.domain.export
 
 import android.os.Parcelable
 import androidx.room.Relation
+import com.lucianbc.receiptscan.domain.export.SessionException.Cause.*
 import com.lucianbc.receiptscan.domain.model.Category
 import com.lucianbc.receiptscan.infrastructure.entities.ProductEntity
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-@Suppress("DataClassPrivateConstructor")
 @Parcelize
-data class Session(
+data class CloudSession(
     val firstDate: Date,
     val lastDate: Date,
     val content: Content,
@@ -29,15 +29,15 @@ data class Session(
 
     companion object {
         @Suppress("LocalVariableName")
-        fun validate(firstDate: Date?, lastDate: Date?, content: Content?, format: Format?): Session {
-            val _firstDate = firstDate ?: throw ExportException.Cause.BAD_RANGE()
-            val _lastDate = lastDate ?: throw ExportException.Cause.BAD_RANGE()
-            val _content = content ?: throw ExportException.Cause.BAD_CONTENT()
-            val _format = format ?: throw ExportException.Cause.BAD_FORMAT()
+        fun validate(firstDate: Date?, lastDate: Date?, content: Content?, format: Format?): CloudSession {
+            val _firstDate = firstDate ?: throw BAD_RANGE()
+            val _lastDate = lastDate ?: throw BAD_RANGE()
+            val _content = content ?: throw BAD_CONTENT()
+            val _format = format ?: throw BAD_FORMAT()
 
-            if (_firstDate > _lastDate) throw ExportException.Cause.BAD_RANGE()
+            if (_firstDate > _lastDate) throw BAD_RANGE()
 
-            return Session(
+            return CloudSession(
                 _firstDate,
                 _lastDate,
                 _content,
@@ -48,20 +48,49 @@ data class Session(
     }
 }
 
+@Parcelize
+data class LocalSession(
+    val firstDate: Date,
+    val lastDate: Date,
+    val id: String
+) : Parcelable {
+    companion object {
+        @Suppress("LocalVariableName")
+        fun validate(firstDate: Date?, lastDate: Date?): LocalSession {
+            val _firstDate = firstDate ?: throw BAD_RANGE()
+            val _lastDate = lastDate ?: throw BAD_RANGE()
+
+            if (_firstDate > _lastDate) throw BAD_RANGE()
+
+            return LocalSession(
+                _firstDate,
+                _lastDate,
+                UUID.randomUUID().toString()
+            )
+        }
+    }
+}
+
 enum class Status {
     UPLOADING,
     WAITING_DOWNLOAD,
-    COMPLETE
+    BUILDING_SPREADSHEET,
+    COMPLETE,
+    ERROR
+}
+
+enum class Type {
+    CLOUD,
+    LOCAL
 }
 
 data class Export (
     val id: String,
     val firstDate: Date,
     val lastDate: Date,
-    val content: Session.Content,
-    val format: Session.Format,
     val status: Status,
-    val downloadLink: String
+    val downloadLink: String,
+    val type: Type
 )
 
 data class FinishedNotification(
@@ -72,17 +101,17 @@ data class FinishedNotification(
 data class Manifest (
     val firstDate: Date,
     val lastDate: Date,
-    val content: Session.Content,
-    val format: Session.Format,
+    val content: CloudSession.Content,
+    val format: CloudSession.Format,
     val id: String,
     val notificationToken: String
 ) {
-    constructor(session: Session, notificationToken: String) : this(
-        session.firstDate,
-        session.lastDate,
-        session.content,
-        session.format,
-        session.id,
+    constructor(cloudSession: CloudSession, notificationToken: String) : this(
+        cloudSession.firstDate,
+        cloudSession.lastDate,
+        cloudSession.content,
+        cloudSession.format,
+        cloudSession.id,
         notificationToken
     )
 }

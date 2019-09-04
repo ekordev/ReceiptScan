@@ -8,7 +8,10 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lucianbc.receiptscan.R
 import com.lucianbc.receiptscan.base.BaseFragment
+import com.lucianbc.receiptscan.domain.export.CloudSession
+import com.lucianbc.receiptscan.domain.export.LocalSession
 import com.lucianbc.receiptscan.infrastructure.services.ExportService
+import com.lucianbc.receiptscan.infrastructure.services.LocalExportService
 import com.lucianbc.receiptscan.presentation.Event
 import kotlinx.android.synthetic.main.fragment_export.*
 import org.greenrobot.eventbus.EventBus
@@ -34,15 +37,24 @@ class ExportFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         createExportBtn.setOnClickListener {
-            eventBus.post(Event.ExportForm { s ->
-                activity?.let {
-                    ExportService.intent(activity!!, s).let(it::startService)
-                }
-                fragmentManager?.popBackStack()
-            })
+            eventBus.post(Event.ExportForm(cloudExport, localExport))
         }
         setupAdapter()
         observe(viewModel)
+    }
+
+    private val cloudExport = { s : CloudSession ->
+        activity?.let {
+            ExportService.intent(activity!!, s).let(it::startService)
+        }
+        fragmentManager?.popBackStack()!!
+    }
+
+    private val localExport = { s : LocalSession ->
+        activity?.let {
+            LocalExportService.intent(activity!!, s).let(it::startService)
+        }
+        fragmentManager?.popBackStack()!!
     }
 
     private fun setupAdapter() {

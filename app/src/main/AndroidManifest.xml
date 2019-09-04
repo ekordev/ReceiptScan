@@ -31,7 +31,10 @@
                 android:name=".infrastructure.services.ExportService"
                 android:enabled="true"
                 android:exported="false" />
-
+        <service
+                android:name=".infrastructure.services.LocalExportService"
+                android:enabled="true"
+                android:exported="false" />
         <activity android:name=".presentation.receipt.ReceiptActivity" />
         <activity
                 android:name=".presentation.draft.DraftReviewActivity"
