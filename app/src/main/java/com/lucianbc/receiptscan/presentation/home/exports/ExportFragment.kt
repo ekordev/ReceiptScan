@@ -37,24 +37,10 @@ class ExportFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         createExportBtn.setOnClickListener {
-            eventBus.post(Event.ExportForm(cloudExport, localExport))
+            eventBus.post(Event.ExportForm)
         }
         setupAdapter()
         observe(viewModel)
-    }
-
-    private val cloudExport = { s : CloudSession ->
-        activity?.let {
-            ExportService.intent(activity!!, s).let(it::startService)
-        }
-        fragmentManager?.popBackStack()!!
-    }
-
-    private val localExport = { s : LocalSession ->
-        activity?.let {
-            LocalExportService.intent(activity!!, s).let(it::startService)
-        }
-        fragmentManager?.popBackStack()!!
     }
 
     private fun setupAdapter() {

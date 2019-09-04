@@ -1,23 +1,32 @@
 package com.lucianbc.receiptscan.presentation.home
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.fragment.app.Fragment
 import com.lucianbc.receiptscan.R
-import com.lucianbc.receiptscan.presentation.Event
+import com.lucianbc.receiptscan.domain.export.CloudSession
+import com.lucianbc.receiptscan.domain.export.LocalSession
+import com.lucianbc.receiptscan.infrastructure.services.ExportService
+import com.lucianbc.receiptscan.infrastructure.services.LocalExportService
 import com.lucianbc.receiptscan.presentation.CategoryFragment
 import com.lucianbc.receiptscan.presentation.CurrencyFragment
+import com.lucianbc.receiptscan.presentation.Event
 import com.lucianbc.receiptscan.presentation.home.exports.form.FormContainerFragment
 import com.lucianbc.receiptscan.presentation.scanner.ScannerActivity
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
 
-class MainActivity : DaggerAppCompatActivity() {
+class MainActivity :
+    DaggerAppCompatActivity() {
 
     @Inject
     lateinit var eventBus: EventBus
@@ -29,6 +38,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        readState(savedInstanceState)
         setContentView(R.layout.activity_main)
         initAdapter()
         initButtons()
@@ -84,10 +94,61 @@ class MainActivity : DaggerAppCompatActivity() {
         addFragment(CategoryFragment.TAG, frag)
     }
 
+    private var lastLocalSession: LocalSession? = null
+
     @Subscribe
     fun onExportForm(event: Event.ExportForm) {
-        val frag = FormContainerFragment(event.callback, event.localCallback)
+        val localExportWithPermission = { s: LocalSession ->
+            lastLocalSession = s
+            startLocalExportWithPermission()
+        }
+
+        val frag = FormContainerFragment(onCloudExport, localExportWithPermission)
         addFragment(FormContainerFragment.TAG, frag)
+    }
+
+    @AfterPermissionGranted(WRITE_STORAGE_PERMISSION_REQUEST)
+    private fun startLocalExportWithPermission() {
+        val perm = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        lastLocalSession?.let { s ->
+            if (EasyPermissions.hasPermissions(this, perm))
+                onLocalExport(s)
+            else
+                EasyPermissions.requestPermissions(
+                    this,
+                    getString(R.string.export_storage_perm),
+                    WRITE_STORAGE_PERMISSION_REQUEST,
+                    perm
+                )
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState?.putParcelable(LAST_SESSION_KEY, lastLocalSession)
+    }
+
+    private fun readState(inState: Bundle?) {
+        lastLocalSession = inState?.getParcelable(LAST_SESSION_KEY)
+    }
+
+    private val onCloudExport = { s: CloudSession ->
+        ExportService.intent(this, s).let(::startService)
+        supportFragmentManager.popBackStack()
+    }
+
+    private val onLocalExport = { s: LocalSession ->
+        LocalExportService.intent(this, s).let(::startService)
+        supportFragmentManager.popBackStack()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
     private fun addFragment(tag: String, frag: Fragment) {
@@ -108,5 +169,8 @@ class MainActivity : DaggerAppCompatActivity() {
         private fun navIntent(context: Context) = Intent(context, MainActivity::class.java)
 
         private const val PAGE_KEY = "PAGE"
+
+        private const val WRITE_STORAGE_PERMISSION_REQUEST = 105
+        private const val LAST_SESSION_KEY = "LOCAL_SESSION"
     }
 }

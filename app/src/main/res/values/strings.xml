@@ -56,4 +56,5 @@
     <string name="content_json">JSON</string>
     <string name="export_download_option">Get download link</string>
     <string name="export_local_option">Local Spreadsheet</string>
+    <string name="export_storage_perm">Export feature needs permission to write to the external storage</string>
 </resources>
