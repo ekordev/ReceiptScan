@@ -129,9 +129,6 @@ class DraftViewModel @Inject constructor(
         extractor: (Draft) -> T
     ) = this.value.map(extractor).toLiveData()
 
-    private fun <T> MediatorLiveData<T>.source(source: LiveData<T>) {
-        this.addSource(source) { value = it }
-    }
 
     override fun onCleared() {
         super.onCleared()

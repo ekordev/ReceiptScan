@@ -13,6 +13,6 @@ class ReceiptsUseCaseImpl @Inject constructor(
         return repository
             .getReceipt(receiptId)
             .subscribeOn(Schedulers.io())
-            .let { manageFactory.create(it) }
+            .let { manageFactory.create(it, receiptId) }
     }
 }

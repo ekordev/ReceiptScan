@@ -179,25 +179,53 @@
                 android:layout_gravity="bottom"
                 app:contentInsetStart="0dp"
         >
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-            >
+                    android:weightSum="2">
+
                 <ImageButton
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:background="?android:selectableItemBackgroundBorderless"
+                        android:layout_weight="1"
+                        android:background="?android:selectableItemBackground"
+                        android:src="@drawable/ic_receipt_black_24dp"
+                        android:tint="@color/black"
+                        android:id="@+id/imageBtn"
+                        tools:ignore="ContentDescription"/>
+
+                <ImageButton
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="?android:selectableItemBackground"
+                        android:layout_weight="1"
                         android:src="@drawable/ic_share_black_24dp"
                         android:tint="@color/black"
                         android:id="@+id/shareReceiptBtn"
                         tools:ignore="ContentDescription"
-                        android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintDimensionRatio="H,1:1"
-                />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                        />
+
+            </LinearLayout>
+
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="56dp"-->
+<!--            >-->
+<!--                <ImageButton-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:background="?android:selectableItemBackgroundBorderless"-->
+<!--                        android:src="@drawable/ic_share_black_24dp"-->
+<!--                        android:tint="@color/black"-->
+<!--                        android:id="@+id/shareReceiptBtn"-->
+<!--                        tools:ignore="ContentDescription"-->
+<!--                        android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="parent"-->
+<!--                        android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"-->
+<!--                        app:layout_constraintDimensionRatio="H,1:1"-->
+<!--                />-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
         </com.google.android.material.bottomappbar.BottomAppBar>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

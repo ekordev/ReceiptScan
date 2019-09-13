@@ -29,6 +29,10 @@ fun <T> MediatorLiveData<T>.sourceFirst(source: LiveData<T>) {
     }
 }
 
+fun <T> MediatorLiveData<T>.source(source: LiveData<T>) {
+    this.addSource(source) { value = it }
+}
+
 fun Currency?.show() = this?.currencyCode ?: ""
 
 fun Float?.show() = (this ?: 0f).toString()
