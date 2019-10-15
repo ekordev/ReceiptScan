@@ -1,5 +1,6 @@
 package com.lucianbc.receiptscan.domain.receipts
 
+import android.graphics.Bitmap
 import com.lucianbc.receiptscan.domain.model.ImagePath
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -11,6 +12,7 @@ interface ReceiptsUseCase : ISourcesManager {
 
     interface Manage {
         val receipt: Flowable<Receipt>
+        val image: Flowable<Bitmap>
         fun exportReceipt(): Single<String>
         fun exportPath(): Single<ImagePath>
         fun exportBoth(): Single<Pair<String, ImagePath>>

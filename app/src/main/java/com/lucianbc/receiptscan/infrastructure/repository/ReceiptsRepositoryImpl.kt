@@ -1,11 +1,13 @@
 package com.lucianbc.receiptscan.infrastructure.repository
 
+import android.graphics.Bitmap
 import com.lucianbc.receiptscan.domain.model.Category
 import com.lucianbc.receiptscan.domain.receipts.*
 import com.lucianbc.receiptscan.infrastructure.entities.ProductEntity
 import com.lucianbc.receiptscan.infrastructure.entities.ReceiptEntity
 import com.lucianbc.receiptscan.infrastructure.dao.AppDao
 import com.lucianbc.receiptscan.infrastructure.dao.Converters
+import com.lucianbc.receiptscan.infrastructure.dao.ImagesDao
 import io.reactivex.Flowable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.zipWith
@@ -14,7 +16,8 @@ import java.util.*
 import javax.inject.Inject
 
 class ReceiptsRepositoryImpl @Inject constructor(
-    private val appDao: AppDao
+    private val appDao: AppDao,
+    private val imagesDao: ImagesDao
 ) : ReceiptsRepository {
     override fun getAvailableCurrencies() =
         appDao.selectCurrencies()
@@ -45,6 +48,11 @@ class ReceiptsRepositoryImpl @Inject constructor(
         category: Category
     ): Flowable<List<ReceiptListItem>> {
         return appDao.getTransactionsForCategory(currency, month, category)
+    }
+
+    override fun getImage(receiptId: ReceiptId): Flowable<Bitmap> {
+        return appDao.getImagePath(receiptId)
+            .map(imagesDao::readImage)
     }
 
     override fun getAllTransactions(

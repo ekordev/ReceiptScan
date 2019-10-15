@@ -1,5 +1,6 @@
 package com.lucianbc.receiptscan.presentation.receipt
 
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.toLiveData
@@ -10,6 +11,7 @@ import com.lucianbc.receiptscan.domain.receipts.ReceiptsUseCase
 import com.lucianbc.receiptscan.infrastructure.dao.ImagesDao
 import com.lucianbc.receiptscan.util.mld
 import com.lucianbc.receiptscan.util.show
+import com.lucianbc.receiptscan.util.source
 import com.lucianbc.receiptscan.util.sourceFirst
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -23,6 +25,8 @@ class ReceiptViewModel @Inject constructor(
     private lateinit var useCase: ReceiptsUseCase.Manage
 
     private val disposables = CompositeDisposable()
+
+    val receiptImage = mld<Bitmap>()
 
     val merchant = mld<String>()
     val date = mld<Date>()
@@ -39,6 +43,7 @@ class ReceiptViewModel @Inject constructor(
             extract { it.currency.show() }.also(currency::sourceFirst)
             extract { it.category }.also(category::sourceFirst)
             extract { it.productEntities }.also(products::sourceFirst)
+            image.toLiveData().also { receiptImage.source(it) }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.lucianbc.receiptscan.domain.receipts
 
+import android.graphics.Bitmap
 import com.lucianbc.receiptscan.domain.model.Category
 import io.reactivex.Flowable
 import java.util.*
@@ -12,4 +13,5 @@ interface ReceiptsRepository {
     fun getAllSpendings(currency: Currency, month: Date): Flowable<List<SpendingGroup>>
     fun getTransactions(currency: Currency, month: Date, category: Category): Flowable<List<ReceiptListItem>>
     fun getAllTransactions(currency: Currency, month: Date): Flowable<List<ReceiptListItem>>
+    fun getImage(receiptId: ReceiptId): Flowable<Bitmap>
 }

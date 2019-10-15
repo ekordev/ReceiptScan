@@ -1,10 +1,13 @@
 package com.lucianbc.receiptscan.presentation.receipt
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.lucianbc.receiptscan.R
 import com.lucianbc.receiptscan.base.BaseActivity
 import com.lucianbc.receiptscan.presentation.ShareOptionsSheet
@@ -14,11 +17,13 @@ import kotlinx.android.synthetic.main.fragment_receipt.*
 class ReceiptActivity
     : BaseActivity<ReceiptViewModel>(ReceiptViewModel::class.java) {
 
+    private val imageFrag by lazy { ImageFragment() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         safeInit()
         setContentView(R.layout.activity_receipt)
-        setupShare()
+        setupButtons()
     }
 
     private fun safeInit() {
@@ -27,7 +32,7 @@ class ReceiptActivity
         }
     }
 
-    private fun setupShare() {
+    private fun setupButtons() {
         shareReceiptBtn.setOnClickListener {
             ShareOptionsSheet().apply {
                 show(supportFragmentManager, ShareOptionsSheet.TAG)
@@ -36,6 +41,7 @@ class ReceiptActivity
                 onBoth = { viewModel.exportBoth(bothExporter, shareFileErrorHandler) }
             }
         }
+        imageBtn.setOnClickListener(addFragment(IMAGE_FRAG_TAG, imageFrag))
     }
 
     private val textExporter = { text: String ->
@@ -85,6 +91,23 @@ class ReceiptActivity
         Unit
     }
 
+    @SuppressLint("PrivateResource")
+    private val inn = R.anim.mtrl_bottom_sheet_slide_in
+    @SuppressLint("PrivateResource")
+    private val out = R.anim.mtrl_bottom_sheet_slide_out
+
+    private fun addFragment(tag: String, frag: Fragment): (View) -> Unit {
+        return {
+            supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(inn, out, inn, out)
+                .add(R.id.receiptContainer, frag, tag)
+                .addToBackStack(tag)
+                .commit()
+        }
+    }
+
+
     companion object {
         fun navIntent(
             context: Context,
@@ -94,5 +117,6 @@ class ReceiptActivity
         }
 
         private const val RECEIPT_ID = "RECEIPT_ID"
+        private const val IMAGE_FRAG_TAG = "RECEIPT_IMAGE"
     }
 }

@@ -10,9 +10,15 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 class ManageReceiptUseCase @AssistedInject constructor(
-    @Assisted source: Flowable<Receipt>
+    @Assisted source: Flowable<Receipt>,
+    @Assisted private val receiptId: ReceiptId,
+    private val repository: ReceiptsRepository
 ) : ReceiptsUseCase.Manage {
     override val receipt = source.replay(1).autoConnect()
+
+    override val image by lazy {
+        repository.getImage(receiptId)
+    }
 
     override fun exportReceipt(): Single<String> =
         receipt.map { it.exported() }.takeSingle()
@@ -34,6 +40,6 @@ class ManageReceiptUseCase @AssistedInject constructor(
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(source: Flowable<Receipt>): ManageReceiptUseCase
+        fun create(source: Flowable<Receipt>, receiptId: ReceiptId): ManageReceiptUseCase
     }
 }
